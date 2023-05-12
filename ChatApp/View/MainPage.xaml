@@ -17,12 +17,42 @@
                 Command="{Binding GetChatsCommand}" />
     </ContentPage.Behaviors>
     
-    <Grid RowDefinitions="*,50"
+    <Grid RowDefinitions="50, *,50"
           ColumnDefinitions="*,*"
           ColumnSpacing="5"
           RowSpacing="5"
           Padding="5">
-        <CollectionView Grid.Row="0"
+        <Border HeightRequest="40"
+                MinimumWidthRequest="300"
+                HorizontalOptions="FillAndExpand"
+                Stroke="LightGray"
+                Grid.ColumnSpan="2"
+                Margin="5"
+                Grid.Row="0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20,20,20,20" />
+            </Border.StrokeShape>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding GoToSearchCommand}">
+
+                </TapGestureRecognizer>
+            </Border.GestureRecognizers>
+            <FlexLayout
+                
+                Direction="Row"
+                AlignItems="Center"
+                JustifyContent="Center">
+                <Image Source="search_icon.svg"
+                       Aspect="AspectFill"
+                       HeightRequest="16"
+                       WidthRequest="16"
+                       FlexLayout.Basis="30"/>
+                <Label Text="Search chats"
+                       TextColor="Gray"/>
+            </FlexLayout>
+        </Border>
+
+        <CollectionView Grid.Row="1"
                         Grid.ColumnSpan="2"
                         ItemsSource="{Binding Users}"
                         IsVisible="{Binding IsNotBusy}">
@@ -31,12 +61,64 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:User">
-                    <Frame HeightRequest="60">
+                    <Frame Padding="10" Margin="5">
                         <Frame.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToChatCommand }"
                                                   CommandParameter="{Binding .}"/>
                         </Frame.GestureRecognizers>
-                        <Label Text="{Binding Username}"/>
+                        <Grid ColumnDefinitions="60, *, 60"
+                              RowDefinitions="*, *">
+                            <Frame HeightRequest="50"
+                                   WidthRequest="50"
+                                   CornerRadius="70"
+                                   HorizontalOptions="Start"
+                                   IsClippedToBounds="True"
+                                   Padding="0"
+                                   BorderColor="Gray"
+                                   Margin="0,0,0,0"
+                                   Grid.RowSpan="2"
+                                   Grid.Column="0">
+                                <Image
+                                    Aspect="AspectFill"
+                                    Source="user_icon.png"
+                                    SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                                    Margin="6"
+                                    HeightRequest="50"
+                                    WidthRequest="50"
+                                    VerticalOptions="StartAndExpand"
+                                    HorizontalOptions="Center" />
+                            </Frame>
+                            <Label Text="{Binding Username}"
+                                   FontAttributes="Bold"
+                                   Grid.ColumnSpan="2"
+                                   Grid.Column="1"
+                                   Grid.Row="0"/>
+                            <Label FontSize="14"
+                                   TextColor="Grey"
+                                   Grid.Column="1"
+                                   Grid.Row="1"
+                                   LineBreakMode="TailTruncation">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding LastMessage.FromSelf}" Value="True">
+                                                <Setter Property="Text" Value="{Binding LastMessage.Content, StringFormat='Me: {0}'}"/>
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding LastMessage.FromSelf}" Value="False">
+                                                <Setter Property="Text" Value="{Binding LastMessage.Content}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            <Label Text="{Binding LastMessage.UpdatedAt, StringFormat='{}{0:HH:mm}'}"
+                                   HorizontalOptions="End"
+                                   TextColor="DarkGray"
+                                   FontAttributes="Bold"
+                                   Grid.Column="2"
+                                   Grid.Row="0"/>
+                        </Grid>
+                        
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -52,12 +134,12 @@
                 IsEnabled="{Binding IsNotBusy}"
                 Text="Logout"
                 Grid.Column="0"
-                Grid.Row="1"/>
+                Grid.Row="2"/>
         <Button Command="{Binding GoToSearchCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Text="Search users"
                 Grid.Column="2"
-                Grid.Row="1"/>
+                Grid.Row="2"/>
 
     </Grid>
 

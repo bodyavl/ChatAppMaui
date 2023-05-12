@@ -10,5 +10,6 @@ namespace ChatApp.Model
     {
         public string Username { get; set; }
         public string _Id { get; set; }
+        public Message LastMessage { get; set; }
     }
 }

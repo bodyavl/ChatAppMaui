@@ -10,7 +10,10 @@
         <SearchBar x:Name="searchBar"
                    SearchCommand="{Binding PerformSearchCommand}"
                    SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"
-                   />
+                   HorizontalOptions="FillAndExpand"
+                   Placeholder="Search chats"
+                   >
+        </SearchBar>
         <CollectionView x:Name="searchResults"
                   ItemsSource="{Binding Users}" >
             <CollectionView.ItemTemplate>
