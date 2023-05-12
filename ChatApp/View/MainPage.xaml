@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:ChatApp.ViewModel"
+             xmlns:model="clr-namespace:ChatApp.Model"
+             x:DataType="viewmodel:MainViewModel"
+             x:Class="ChatApp.MainPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="Chats">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior
+                EventName="Appearing"
+                Command="{Binding CheckLogInCommand}" />
+        <toolkit:EventToCommandBehavior
+                EventName="NavigatedTo"
+                Command="{Binding GetChatsCommand}" />
+    </ContentPage.Behaviors>
+    
+    <Grid RowDefinitions="*,50"
+          ColumnDefinitions="*,*"
+          ColumnSpacing="5"
+          RowSpacing="5"
+          Padding="5">
+        <CollectionView Grid.Row="0"
+                        Grid.ColumnSpan="2"
+                        ItemsSource="{Binding Users}"
+                        IsVisible="{Binding IsNotBusy}">
+            <CollectionView.EmptyView>
+                <Label Text="No chats yet" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:User">
+                    <Frame HeightRequest="60">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToChatCommand }"
+                                                  CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="{Binding Username}"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           Grid.ColumnSpan="2"
+                           Grid.Row="0"/>
+
+        <Button Command="{Binding LogoutCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Text="Logout"
+                Grid.Column="0"
+                Grid.Row="1"/>
+        <Button Command="{Binding GoToSearchCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Text="Search users"
+                Grid.Column="2"
+                Grid.Row="1"/>
+
+    </Grid>
+
+</ContentPage>

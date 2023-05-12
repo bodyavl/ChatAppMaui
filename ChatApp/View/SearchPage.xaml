@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:ChatApp.ViewModel"
+             xmlns:model="clr-namespace:ChatApp.Model"
+             x:DataType="viewmodel:SearchViewModel"
+             x:Class="ChatApp.View.SearchPage"
+             Title="SearchPage">
+    <VerticalStackLayout>
+        <SearchBar x:Name="searchBar"
+                   SearchCommand="{Binding PerformSearchCommand}"
+                   SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"
+                   />
+        <CollectionView x:Name="searchResults"
+                  ItemsSource="{Binding Users}" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:User">
+                    <Frame HeightRequest="60">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:SearchViewModel}}, Path=GoToChatCommand }"
+                                                  CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+                        <Label Text="{Binding Username}"/>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"/>
+    </VerticalStackLayout>
+</ContentPage>

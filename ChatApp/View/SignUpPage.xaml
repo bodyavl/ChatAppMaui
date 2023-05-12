@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodel="clr-namespace:ChatApp.ViewModel"
+             x:Class="ChatApp.View.SignUpPage"
+             x:DataType="viewmodel:SignUpViewModel"
+             Title="SignUpPage">
+    <ScrollView>
+        <VerticalStackLayout Spacing="20">
+            <Label Text="Sign Up" FontSize="Header" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <Entry 
+                Text="{Binding Username}"
+                IsEnabled="{Binding IsNotBusy}"
+                Placeholder="username"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+            <Entry 
+                Text="{Binding Password}"
+                IsEnabled="{Binding IsNotBusy}"
+                Placeholder="password"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center"
+                IsPassword="True"/>
+            <Button 
+                Text="Sign Up"
+                IsEnabled="{Binding IsNotBusy}"
+                Command="{Binding SignUpCommand}"
+                HorizontalOptions="Center"
+                />
+            <ActivityIndicator IsVisible="{Binding IsBusy}"
+                           IsRunning="{Binding IsBusy}"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
