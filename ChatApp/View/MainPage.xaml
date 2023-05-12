@@ -128,7 +128,7 @@
                            HorizontalOptions="FillAndExpand"
                            VerticalOptions="CenterAndExpand"
                            Grid.ColumnSpan="2"
-                           Grid.Row="0"/>
+                           Grid.Row="1"/>
 
         <Button Command="{Binding LogoutCommand}"
                 IsEnabled="{Binding IsNotBusy}"

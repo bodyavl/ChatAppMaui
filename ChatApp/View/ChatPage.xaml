@@ -27,18 +27,18 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Message">
-                    <Border MinimumHeightRequest="30" MinimumWidthRequest="60" Margin="8" Padding="10">
+                    <Border MinimumWidthRequest="60" Margin="5" Padding="15, 10" Stroke="Transparent">
                         <Border.Style>
                             <Style TargetType="Border">
                                 <Style.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding FromSelf}" Value="True">
-                                        <Setter Property="BackgroundColor" Value="LightBlue" />
-                                        <Setter Property="StrokeShape" Value="RoundRectangle 24, 24, 24, 0" />
+                                        <Setter Property="BackgroundColor" Value="LightGreen" />
+                                        <Setter Property="StrokeShape" Value="RoundRectangle 18, 20, 20, 5" />
                                         <Setter Property="HorizontalOptions" Value="End"/>
                                     </DataTrigger>
                                     <DataTrigger TargetType="Border" Binding="{Binding FromSelf}" Value="False">
                                         <Setter Property="BackgroundColor" Value="LightGray" />
-                                        <Setter Property="StrokeShape" Value="RoundRectangle 0, 24, 24, 24" />
+                                        <Setter Property="StrokeShape" Value="RoundRectangle 24, 24, 5, 24" />
                                         <Setter Property="HorizontalOptions" Value="Start"/>
                                     </DataTrigger>
                                 </Style.Triggers>
