@@ -17,37 +17,42 @@ namespace ChatApp.Services
         public Action<string> AddMessage;
 
         public Action<Message> AddPrivateMessage;
+        public Func<Task> RefreshChats;
+        public Action<string, Message> ShowNewMessage;
         public ClientService() 
         {
-            Task.Run(ConnectClient);
+            Task.Run(() => ConnectClient());
         }
 
         public async Task ConnectClient()
         {
-            try
+            client = new SocketIO("https://node-chat-app-egyw.onrender.com", new SocketIOOptions
             {
-                client = new SocketIO("https://node-chat-app-egyw.onrender.com", new SocketIOOptions
-                {
-                    Auth = new { username = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser.Username))).Result, 
-                                 userId = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser._Id))).Result
-                    },
-                });
+                Auth = new { username = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser.Username))).Result, 
+                                userId = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser._Id))).Result
+                },
+            });
 
-                client.On("receive message", (response) =>
+            client.On("receive message", (response) =>
+            {
+                
+                var from = response.GetValue<string>();
+                var content = response.GetValue<string>(1);
+                Message message = new()
                 {
-                    var content = response.GetValue<string>();
-                    
-                    AddPrivateMessage(new Message { Content = content, FromSelf = false});
-                });
+                    FromSelf = false,
+                    Content = content,
+                    UpdatedAt = DateTime.Now,
+                };
+
+
+                ShowNewMessage(from, message);
+                AddPrivateMessage?.Invoke(message);
+            });
+                
                 
 
-                await client.ConnectAsync();
-
-            }
-            catch (Exception e)
-            {
-                await Shell.Current.DisplayAlert("Error occured", e.Message, "OK");
-            }
+            await client.ConnectAsync();
 
         }
         public bool IsConnected()
@@ -65,9 +70,10 @@ namespace ChatApp.Services
             await client.EmitAsync("chat message", message);
         }
 
-        public async Task SendPrivateMessageAsync(string content, string to)
+        public async Task SendPrivateMessageAsync(string content, string from, string to)
         {
-            await client.EmitAsync("private message", new { content, to });
+            await RefreshChats();
+            await client.EmitAsync("private message", new { content, from, to });
         }
     }
 }

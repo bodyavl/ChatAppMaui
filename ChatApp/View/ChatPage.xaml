@@ -16,14 +16,14 @@
           ColumnDefinitions="*,80"
           RowSpacing="5">
         <CollectionView Grid.Row="0"
-                        IsEnabled="{Binding IsNotBusy}"
                         VerticalOptions="EndAndExpand"
                         VerticalScrollBarVisibility="Never"
+                        SelectionMode="None"
                         Grid.ColumnSpan="2"
                         ItemsSource="{Binding Messages}"
                         ItemsUpdatingScrollMode="KeepLastItemInView">
             <CollectionView.EmptyView>
-                <Label Text="No messages yet" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <Label Text="No messages yet" VerticalOptions="Center" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Message">
@@ -33,12 +33,12 @@
                                 <Style.Triggers>
                                     <DataTrigger TargetType="Border" Binding="{Binding FromSelf}" Value="True">
                                         <Setter Property="BackgroundColor" Value="LightGreen" />
-                                        <Setter Property="StrokeShape" Value="RoundRectangle 18, 20, 20, 5" />
+                                        <Setter Property="StrokeShape" Value="RoundRectangle 20, 20, 20, 5" />
                                         <Setter Property="HorizontalOptions" Value="End"/>
                                     </DataTrigger>
                                     <DataTrigger TargetType="Border" Binding="{Binding FromSelf}" Value="False">
                                         <Setter Property="BackgroundColor" Value="LightGray" />
-                                        <Setter Property="StrokeShape" Value="RoundRectangle 24, 24, 5, 24" />
+                                        <Setter Property="StrokeShape" Value="RoundRectangle 20, 20, 5, 20" />
                                         <Setter Property="HorizontalOptions" Value="Start"/>
                                     </DataTrigger>
                                 </Style.Triggers>

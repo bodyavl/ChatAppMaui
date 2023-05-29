@@ -8,6 +8,7 @@ public partial class ChatPage : ContentPage
 	{
 		BindingContext = vm;
 		InitializeComponent();
+
 	}
 	
 }

@@ -4,26 +4,27 @@
              xmlns:viewmodel="clr-namespace:ChatApp.ViewModel"
              x:DataType="viewmodel:LoginViewModel"
              x:Class="ChatApp.View.LoginPage"
-             Title="LoginPage">
+             Title="Log In">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="False" IsEnabled="False" />
     </Shell.BackButtonBehavior>
     
     <ScrollView>
-        <VerticalStackLayout Spacing="20" >
-            <Label Text="Log In" FontSize="Header" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <VerticalStackLayout Spacing="20" Padding="50">
+            <Label Text="Log In" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Entry 
                 Text="{Binding Username}"
+                
                 IsEnabled="{Binding IsNotBusy}"
                 Placeholder="username"
                 VerticalOptions="Center" 
-                HorizontalOptions="Center" />
+                HorizontalOptions="FillAndExpand"/>
             <Entry 
                 Text="{Binding Password}"
                 IsEnabled="{Binding IsNotBusy}"
                 Placeholder="password"
                 VerticalOptions="Center" 
-                HorizontalOptions="Center"
+                HorizontalOptions="FillAndExpand"
                 IsPassword="True"/>
             <Button 
                 Text="Log In"

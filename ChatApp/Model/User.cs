@@ -11,5 +11,7 @@ namespace ChatApp.Model
         public string Username { get; set; }
         public string _Id { get; set; }
         public Message LastMessage { get; set; }
+        public string LastMessageTime { get; set; }
+        public bool IsSentMessage { get ; set; } = false;
     }
 }

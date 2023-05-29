@@ -24,34 +24,33 @@ namespace ChatApp.Services
         {
             var response = await _httpClient.PostAsJsonAsync("/user/login", new { username, password });
 
-            var user = await response.Content.ReadFromJsonAsync<LocalUser>();
+            response.EnsureSuccessStatusCode();
 
-            if (user != null)
-            {
-                await SecureStorage.Default.SetAsync(nameof(LocalUser._Id), user._Id);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.AccessToken), user.AccessToken);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.RefreshToken), user.RefreshToken);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.Username), user.Username);
-                if (!clientService.IsConnected()) await clientService.ConnectClient();
-            }
+            var user = await response.Content.ReadFromJsonAsync<LocalUser>();
 
             return user;
 
         }
+
+        public async Task<UserTokens> UpdateTokens(string refreshToken)
+        {
+            var response = await _httpClient.PostAsJsonAsync("/user/token", new { refreshToken });
+
+            response.EnsureSuccessStatusCode();
+
+            var tokens = await response.Content.ReadFromJsonAsync<UserTokens>();
+            
+            return tokens;
+
+        }
         public async Task<LocalUser> SignUpAsync(string username, string password)
         {
-            var response = await _httpClient.PostAsJsonAsync("/user/signup", new { username = username, password = password });
+            var response = await _httpClient.PostAsJsonAsync("/user/signup", new { username, password });
+
+            response.EnsureSuccessStatusCode();
 
             var user = await response.Content.ReadFromJsonAsync<LocalUser>();
 
-            if (user != null)
-            {
-                await SecureStorage.Default.SetAsync(nameof(LocalUser._Id), user._Id);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.AccessToken), user.AccessToken);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.RefreshToken), user.RefreshToken);
-                await SecureStorage.Default.SetAsync(nameof(LocalUser.Username), user.Username);
-                if (!clientService.IsConnected()) await clientService.ConnectClient();
-            }
 
             return user;
 
@@ -65,6 +64,20 @@ namespace ChatApp.Services
             
             var response = await _httpClient.SendAsync(request);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                var refreshToken = await SecureStorage.Default.GetAsync(nameof(LocalUser.RefreshToken));
+                var newTokens = await UpdateTokens(refreshToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.AccessToken), newTokens.AccessToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.RefreshToken), newTokens.RefreshToken);
+                token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
+                request = new HttpRequestMessage(HttpMethod.Get, $"/user/search?q={query}");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+                response = await _httpClient.SendAsync(request);
+            }
+
+            response.EnsureSuccessStatusCode();
+
             var users = await response.Content.ReadFromJsonAsync<List<User>>();
 
             return users;
@@ -73,20 +86,42 @@ namespace ChatApp.Services
         public async Task<List<User>> GetChatsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/user/chats");
-            var token = await SecureStorage.GetAsync(nameof(LocalUser.AccessToken));
+            var token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
             request.Headers.Add("Authorization", $"Bearer {token}");
 
             var response = await _httpClient.SendAsync(request);
 
+            if(response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                var refreshToken = await SecureStorage.Default.GetAsync(nameof(LocalUser.RefreshToken));
+                var newTokens = await UpdateTokens(refreshToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.AccessToken), newTokens.AccessToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.RefreshToken), newTokens.RefreshToken);
+                token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
+                request = new HttpRequestMessage(HttpMethod.Get, $"/user/chats");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+                response = await _httpClient.SendAsync(request);
+            }
+
+            response.EnsureSuccessStatusCode();
+
             var users = await response.Content.ReadFromJsonAsync<List<User>>();
+            
+
 
             return users;
         }
 
         public async Task LogoutAsync()
         {
-            var token = await SecureStorage.GetAsync(nameof(LocalUser.RefreshToken));
-            var response = await _httpClient.PostAsJsonAsync("/user/logout", new { refreshToken = token });
+            var request = new HttpRequestMessage(HttpMethod.Delete, "/user/logout");
+
+            var refreshToken = await SecureStorage.GetAsync(nameof(LocalUser.RefreshToken));
+            request.Content = JsonContent.Create(new { refreshToken });
+
+            var response = await _httpClient.SendAsync(request);
+
+            response.EnsureSuccessStatusCode();
             
             SecureStorage.Default.Remove(nameof(LocalUser.RefreshToken));
             SecureStorage.Default.Remove(nameof(LocalUser.AccessToken));
@@ -98,7 +133,7 @@ namespace ChatApp.Services
         public async Task AddMessageAsync(string from, string to, string content)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/message/add");
-            var token = await SecureStorage.GetAsync(nameof(LocalUser.AccessToken));
+            var token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
             request.Headers.Add("Authorization", $"Bearer {token}");
             request.Method = HttpMethod.Post;
             request.Content = JsonContent.Create(new { content, from, to });
@@ -110,10 +145,24 @@ namespace ChatApp.Services
         public async Task<List<Message>> GetMessagesAsync(string from, string to)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/message?from={from}&to={to}");
-            var token = await SecureStorage.GetAsync(nameof(LocalUser.AccessToken));
+            var token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
             request.Headers.Add("Authorization", $"Bearer {token}");
 
             var response = await _httpClient.SendAsync(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                var refreshToken = await SecureStorage.Default.GetAsync(nameof(LocalUser.RefreshToken));
+                var newTokens = await UpdateTokens(refreshToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.AccessToken), newTokens.AccessToken);
+                await SecureStorage.Default.SetAsync(nameof(LocalUser.RefreshToken), newTokens.RefreshToken);
+                token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
+                request = new HttpRequestMessage(HttpMethod.Get, $"/message?from={from}&to={to}");
+                request.Headers.Add("Authorization", $"Bearer {token}");
+                response = await _httpClient.SendAsync(request);
+            }
+
+            response.EnsureSuccessStatusCode();
 
             var messages = await response.Content.ReadFromJsonAsync<List<Message>>();
 

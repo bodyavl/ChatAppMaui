@@ -4,6 +4,7 @@ using ChatApp.ViewModel;
 using Microsoft.Extensions.Logging;
 using SocketIOClient;
 using CommunityToolkit.Maui;
+using Plugin.LocalNotification;
 
 namespace ChatApp;
 
@@ -21,7 +22,8 @@ public static class MauiProgram
 			})
             .UseMauiCommunityToolkit();
 
-		builder.Services.AddSingleton<MainPage>();
+
+        builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<SignUpPage>();
 		builder.Services.AddTransient<SearchPage>();
@@ -36,8 +38,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<ClientService>();
         builder.Services.AddSingleton<ApiService>();
 
-#if DEBUG
-        builder.Logging.AddDebug();
+#if ANDROID
+		builder.UseLocalNotification();
+#endif
+
+#if DEBUG 
+		builder.Logging.AddDebug();
 #endif
 
 		return builder.Build();

@@ -50,6 +50,12 @@ namespace ChatApp.ViewModel
                 {
                     Messages.Add(message);
                 }
+
+                var fakeMessage = new Message();
+                await Task.Delay(0).ContinueWith(t => Messages.Add(fakeMessage));
+
+                Messages.Remove(fakeMessage);
+
             }
             catch (Exception e)
             {
@@ -58,6 +64,7 @@ namespace ChatApp.ViewModel
             finally
             {
                 IsBusy = false;
+                
             }
         }
 
@@ -68,7 +75,7 @@ namespace ChatApp.ViewModel
             {
                 var id = await SecureStorage.GetAsync(nameof(LocalUser._Id));
                 await apiService.AddMessageAsync(id, To._Id, Content);
-                await clientService.SendPrivateMessageAsync(Content, To._Id);
+                await clientService.SendPrivateMessageAsync(Content, id, To._Id);
                 Messages.Add(new Message { Content = Content, FromSelf = true });
                 Content = "";
             }

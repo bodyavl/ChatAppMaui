@@ -4,22 +4,22 @@
              xmlns:viewmodel="clr-namespace:ChatApp.ViewModel"
              x:Class="ChatApp.View.SignUpPage"
              x:DataType="viewmodel:SignUpViewModel"
-             Title="SignUpPage">
+             Title="Sign Up">
     <ScrollView>
-        <VerticalStackLayout Spacing="20">
-            <Label Text="Sign Up" FontSize="Header" HorizontalOptions="Center" VerticalOptions="Center"/>
+        <VerticalStackLayout Spacing="20" Padding="50">
+            <Label Text="Sign Up" FontSize="32" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Entry 
                 Text="{Binding Username}"
                 IsEnabled="{Binding IsNotBusy}"
                 Placeholder="username"
                 VerticalOptions="Center" 
-                HorizontalOptions="Center" />
+                HorizontalOptions="FillAndExpand" />
             <Entry 
                 Text="{Binding Password}"
                 IsEnabled="{Binding IsNotBusy}"
                 Placeholder="password"
                 VerticalOptions="Center" 
-                HorizontalOptions="Center"
+                HorizontalOptions="FillAndExpand"
                 IsPassword="True"/>
             <Button 
                 Text="Sign Up"

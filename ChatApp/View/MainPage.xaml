@@ -11,15 +11,12 @@
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
                 EventName="Appearing"
-                Command="{Binding CheckLogInCommand}" />
-        <toolkit:EventToCommandBehavior
-                EventName="NavigatedTo"
                 Command="{Binding GetChatsCommand}" />
     </ContentPage.Behaviors>
     
     <Grid RowDefinitions="50, *,50"
           ColumnDefinitions="*,*"
-          ColumnSpacing="5"
+          ColumnSpacing="0"
           RowSpacing="5"
           Padding="5">
         <Border HeightRequest="40"
@@ -38,7 +35,6 @@
                 </TapGestureRecognizer>
             </Border.GestureRecognizers>
             <FlexLayout
-                
                 Direction="Row"
                 AlignItems="Center"
                 JustifyContent="Center">
@@ -54,6 +50,8 @@
 
         <CollectionView Grid.Row="1"
                         Grid.ColumnSpan="2"
+                        HorizontalOptions="FillAndExpand"
+                        SelectionMode="None"
                         ItemsSource="{Binding Users}"
                         IsVisible="{Binding IsNotBusy}">
             <CollectionView.EmptyView>
@@ -61,33 +59,26 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:User">
-                    <Frame Padding="10" Margin="5">
-                        <Frame.GestureRecognizers>
+                    <Border Padding="15, 10" Margin="5">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20,20,20,20" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainViewModel}}, Path=GoToChatCommand }"
                                                   CommandParameter="{Binding .}"/>
-                        </Frame.GestureRecognizers>
-                        <Grid ColumnDefinitions="60, *, 60"
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="60, *, 80"
                               RowDefinitions="*, *">
-                            <Frame HeightRequest="50"
-                                   WidthRequest="50"
-                                   CornerRadius="70"
-                                   HorizontalOptions="Start"
-                                   IsClippedToBounds="True"
-                                   Padding="0"
-                                   BorderColor="Gray"
-                                   Margin="0,0,0,0"
-                                   Grid.RowSpan="2"
-                                   Grid.Column="0">
-                                <Image
+                            <Image
+                                    Grid.RowSpan="2"
+                                    Grid.Column="0"
                                     Aspect="AspectFill"
                                     Source="user_icon.png"
-                                    SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                                    Margin="6"
+                                    Margin="0,0,0,0"
                                     HeightRequest="50"
                                     WidthRequest="50"
                                     VerticalOptions="StartAndExpand"
-                                    HorizontalOptions="Center" />
-                            </Frame>
+                                    HorizontalOptions="StartAndExpand" />
                             <Label Text="{Binding Username}"
                                    FontAttributes="Bold"
                                    Grid.ColumnSpan="2"
@@ -111,15 +102,16 @@
                                     </Style>
                                 </Label.Style>
                             </Label>
-                            <Label Text="{Binding LastMessage.UpdatedAt, StringFormat='{}{0:HH:mm}'}"
+                            <Label Text="{Binding LastMessageTime}"
                                    HorizontalOptions="End"
                                    TextColor="DarkGray"
                                    FontAttributes="Bold"
                                    Grid.Column="2"
                                    Grid.Row="0"/>
+                            <Ellipse WidthRequest="16" HeightRequest="16" Fill="Blue" Grid.Column="2" Grid.Row="1" HorizontalOptions="End" IsVisible="{Binding IsSentMessage}"/>
                         </Grid>
                         
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
@@ -132,13 +124,12 @@
 
         <Button Command="{Binding LogoutCommand}"
                 IsEnabled="{Binding IsNotBusy}"
+                ImageSource="logout_icon.svg"
+                ContentLayout="left, 10"
+                FontSize="18"
+                HeightRequest="50"
                 Text="Logout"
-                Grid.Column="0"
-                Grid.Row="2"/>
-        <Button Command="{Binding GoToSearchCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                Text="Search users"
-                Grid.Column="2"
+                Grid.ColumnSpan="2"
                 Grid.Row="2"/>
 
     </Grid>
