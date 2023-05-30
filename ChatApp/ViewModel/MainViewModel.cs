@@ -19,12 +19,13 @@ namespace ChatApp.ViewModel
     public partial class MainViewModel : BaseViewModel
     {
 
-        public ObservableCollection<User> Users { get; private set; } = new();
+        public ObservableCollection<ChatUser> Users { get; private set; } = new();
 
         ClientService clientService;
         ApiService apiService;
         public MainViewModel(ClientService clientService, ApiService apiService)
         {
+            Title = "Chats";
             this.clientService = clientService;
             this.apiService = apiService;
 
@@ -32,7 +33,7 @@ namespace ChatApp.ViewModel
             clientService.ShowNewMessage = (string from, Message message) =>
             {
                 var foundSender = Users.FirstOrDefault(user => user._Id == from);
-                var sender = new User
+                var sender = new ChatUser
                 {
                     _Id = foundSender._Id,
                     Username = foundSender.Username,
@@ -135,7 +136,7 @@ namespace ChatApp.ViewModel
         }
 
         [RelayCommand]
-        async Task GoToChat(User user)
+        async Task GoToChat(ChatUser user)
         {
             Users[Users.IndexOf(user)].IsSentMessage = false;
 

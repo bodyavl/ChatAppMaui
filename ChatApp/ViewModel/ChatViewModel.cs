@@ -17,7 +17,7 @@ namespace ChatApp.ViewModel
         [ObservableProperty]
         string content;
         [ObservableProperty]
-        User to;
+        ChatUser to;
         public ObservableCollection<Message> Messages { get; private set; } = new();
 
         ClientService clientService;

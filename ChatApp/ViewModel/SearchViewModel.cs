@@ -19,7 +19,7 @@ namespace ChatApp.ViewModel
         string query;
         [ObservableProperty]
         bool isbusy;
-        public ObservableCollection<User> Users { get; private set; } = new();
+        public ObservableCollection<ChatUser> Users { get; private set; } = new();
 
         ApiService apiService;
         public SearchViewModel(ApiService apiService)
@@ -35,7 +35,7 @@ namespace ChatApp.ViewModel
                 IsBusy = true;
                 var users = await apiService.GetUsersAsync(query);
                 if (Users.Count > 0) Users.Clear();
-                foreach (User user in users)
+                foreach (ChatUser user in users)
                 {
                     Users.Add(user);
                 }
@@ -49,7 +49,7 @@ namespace ChatApp.ViewModel
         }
 
         [RelayCommand]
-        async Task GoToChat(User user)
+        async Task GoToChat(ChatUser user)
         {
             await Shell.Current.GoToAsync(nameof(ChatPage), new Dictionary<string, object>
             {

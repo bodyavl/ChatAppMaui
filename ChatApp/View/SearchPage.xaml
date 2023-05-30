@@ -17,7 +17,7 @@
         <CollectionView x:Name="searchResults"
                   ItemsSource="{Binding Users}" >
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:User">
+                <DataTemplate x:DataType="model:ChatUser">
                     <Border Padding="10" Margin="5">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="20,20,20,20" />

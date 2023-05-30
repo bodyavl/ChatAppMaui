@@ -56,7 +56,7 @@ namespace ChatApp.Services
 
         }
 
-        public async Task<List<User>> GetUsersAsync(string query) 
+        public async Task<List<ChatUser>> GetUsersAsync(string query) 
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/user/search?q={query}");
             var token = await SecureStorage.GetAsync(nameof(LocalUser.AccessToken));
@@ -78,12 +78,12 @@ namespace ChatApp.Services
 
             response.EnsureSuccessStatusCode();
 
-            var users = await response.Content.ReadFromJsonAsync<List<User>>();
+            var users = await response.Content.ReadFromJsonAsync<List<ChatUser>>();
 
             return users;
         }
 
-        public async Task<List<User>> GetChatsAsync()
+        public async Task<List<ChatUser>> GetChatsAsync()
         {
             var request = new HttpRequestMessage(HttpMethod.Get, $"/user/chats");
             var token = await SecureStorage.Default.GetAsync(nameof(LocalUser.AccessToken));
@@ -105,7 +105,7 @@ namespace ChatApp.Services
 
             response.EnsureSuccessStatusCode();
 
-            var users = await response.Content.ReadFromJsonAsync<List<User>>();
+            var users = await response.Content.ReadFromJsonAsync<List<ChatUser>>();
             
 
 

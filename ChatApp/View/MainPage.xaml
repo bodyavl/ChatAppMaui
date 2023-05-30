@@ -6,7 +6,7 @@
              x:DataType="viewmodel:MainViewModel"
              x:Class="ChatApp.MainPage"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             Title="Chats">
+             Title="{Binding Title}">
 
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior
@@ -58,7 +58,7 @@
                 <Label Text="No chats yet" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="model:User">
+                <DataTemplate x:DataType="model:ChatUser">
                     <Border Padding="15, 10" Margin="5">
                         <Border.StrokeShape>
                             <RoundRectangle CornerRadius="20,20,20,20" />

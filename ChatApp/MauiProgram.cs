@@ -22,7 +22,6 @@ public static class MauiProgram
 			})
             .UseMauiCommunityToolkit();
 
-
         builder.Services.AddSingleton<MainPage>();
 		builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<SignUpPage>();

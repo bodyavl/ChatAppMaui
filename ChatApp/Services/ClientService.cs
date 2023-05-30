@@ -31,6 +31,7 @@ namespace ChatApp.Services
                 Auth = new { username = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser.Username))).Result, 
                                 userId = Task.Run(async () => await SecureStorage.Default.GetAsync(nameof(LocalUser._Id))).Result
                 },
+                ReconnectionAttempts = 120
             });
 
             client.On("receive message", (response) =>
@@ -65,10 +66,6 @@ namespace ChatApp.Services
             await client.DisconnectAsync();
         }
 
-        public async Task SendMessageAsync(string message)
-        {
-            await client.EmitAsync("chat message", message);
-        }
 
         public async Task SendPrivateMessageAsync(string content, string from, string to)
         {

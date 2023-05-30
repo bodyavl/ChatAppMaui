@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Model
 {
-    public class LocalUser : User
+    public class LocalUser : BaseUser
     {
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
